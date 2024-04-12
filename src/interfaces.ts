@@ -12,6 +12,7 @@ export interface CallState {
 
 export interface AuthState {
   user?: User;
+  token?: string;
 }
 
 export interface AppState {

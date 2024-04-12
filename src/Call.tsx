@@ -10,6 +10,7 @@ import CallManager from "./utils/CallManager";
 export interface User {
   name: string;
   email: string;
+  password: string;
   id: number | string;
 }
 

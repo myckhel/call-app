@@ -25,5 +25,6 @@ module.exports = {
     "import/no-anonymous-default-export": 0,
     "@typescript-eslint/naming-convention": 0,
     "@typescript-eslint/no-unused-vars": 0,
+    "@typescript-eslint/ban-types": 0,
   },
 };

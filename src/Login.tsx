@@ -2,15 +2,22 @@ import { useDispatch } from "react-redux";
 import useState from "use-react-state";
 import { useSetState } from "use-redux-states";
 import { setUser } from "./store/auth";
+import { login } from "./apis/user";
 
 export default function Login() {
-  const [{ email, name }, setState] = useState({ email: "", name: "" });
+  const [{ email, name, password }, setState] = useState({
+    email: "",
+    name: "",
+    password: "",
+  });
   const dispatch = useDispatch();
 
   const onLogin = (e) => {
     e.preventDefault();
-    if (email && name) {
-      dispatch(setUser({ email, name }));
+    if (email && name && password) {
+      login({ email, name, password }).then(({ user }) =>
+        dispatch(setUser(user))
+      );
     }
   };
 
@@ -54,6 +61,22 @@ export default function Login() {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setState({ email: e.target.value })}
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="password"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setState({ password: e.target.value })}
               />
             </div>
           </div>
