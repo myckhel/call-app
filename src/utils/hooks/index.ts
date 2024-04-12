@@ -9,7 +9,7 @@ export const useSocket = (options?: any) => {
   const user: User = useRootMemoSelector("auth.user");
   return useBaseSocket(VITE_APP_SOCKET_URL, {
     enabled: !!user?.id,
-    query: { user: JSON.stringify({ userId: user?.id, name: user?.name }) },
+    query: { user: JSON.stringify({ id: user?.id, name: user?.name }) },
     ...options,
   });
 };
