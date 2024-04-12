@@ -6,17 +6,22 @@ import { Provider } from "react-redux";
 import store from "./store";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { IoProvider } from "socket.io-react-hook";
+import { useSocket } from "./utils/hooks";
 
 function App() {
   const user = useRootMemoSelector("auth.user");
+  useSocket();
 
   return <div>{user ? <Call /> : <Login />}</div>;
 }
 
 const Root = () => (
   <Provider store={store}>
-    <App />
-    <ToastContainer />
+    <IoProvider>
+      <App />
+      <ToastContainer />
+    </IoProvider>
   </Provider>
 );
 export default Root;

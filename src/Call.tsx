@@ -6,6 +6,7 @@ import Calling from "./Calling";
 import { useEffect } from "react";
 import { setOnlineUsers } from "./store/app";
 import CallManager from "./utils/CallManager";
+import { useSocketListeners } from "./utils/hooks";
 
 export interface User {
   name: string;
@@ -42,23 +43,26 @@ const OnlineUsers = () => {
   const dispatch = useDispatch();
   const users: User[] = useRootMemoSelector("app.users.onlines");
 
-  const getOnlineUsers = () => {
-    dispatch(
-      setOnlineUsers([
-        { name: "User 1", email: "user1@email.com", id: 1 },
-        { name: "User 2", email: "user2@email.com", id: 2 },
-      ])
-    );
-  };
+  const socket = useSocketListeners({
+    listeners: {
+      ["online.joined"]: ({ members }) =>
+        dispatch(setOnlineUsers(members || [])),
+      ["online.left"]: ({ members }) => dispatch(setOnlineUsers(members || [])),
+    },
+  });
 
   useEffect(() => {
-    getOnlineUsers();
-  }, []);
+    socket.connected &&
+      socket.emit("request.onlines", (members) =>
+        dispatch(setOnlineUsers(members || []))
+      );
+  }, [socket.connected]);
 
   const onCallUser = (id) => CallManager.startCall(id);
 
   return (
     <div>
+      Online Users
       {users?.map(({ name, id }, index) => (
         <div
           key={index}
