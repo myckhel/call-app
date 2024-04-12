@@ -2,11 +2,22 @@ import { useDispatch } from "react-redux";
 import useState from "use-react-state";
 import { logoutUser } from "./store/auth";
 import { useRootMemoSelector } from "use-redux-states";
+import Calling from "./Calling";
+import { useEffect } from "react";
+import { setOnlineUsers } from "./store/app";
+import CallManager from "./utils/CallManager";
+
+export interface User {
+  name: string;
+  email: string;
+  id: number | string;
+}
 
 export default function Call() {
   const dispatch = useDispatch();
   const onLogout = () => dispatch(logoutUser());
   const user = useRootMemoSelector("auth.user");
+  const callUserId = useRootMemoSelector("call.otherUserId");
 
   return (
     <div>
@@ -20,24 +31,30 @@ export default function Call() {
             Logout
           </button>
         </div>
-        <OnlineUsers />
+        {callUserId ? <Calling /> : <OnlineUsers />}
       </div>
     </div>
   );
 }
 
 const OnlineUsers = () => {
-  const [{ users }, setState] = useState({
-    users: [
-      { name: "User 1", email: "user1@email.com", id: 1 },
-      { name: "User 2", email: "user2@email.com", id: 2 },
-    ],
-  });
+  const dispatch = useDispatch();
+  const users: User[] = useRootMemoSelector("app.users.onlines");
 
-  const onCallUser = (id) => {
-    // Add your call user logic here
-    console.log("Calling user with id:", id);
+  const getOnlineUsers = () => {
+    dispatch(
+      setOnlineUsers([
+        { name: "User 1", email: "user1@email.com", id: 1 },
+        { name: "User 2", email: "user2@email.com", id: 2 },
+      ])
+    );
   };
+
+  useEffect(() => {
+    getOnlineUsers();
+  }, []);
+
+  const onCallUser = (id) => CallManager.startCall(id);
 
   return (
     <div>

@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { AppState } from "../interfaces";
 
-const INIT_STATE = {
+const INIT_STATE: AppState = {
   init: false,
+  users: {
+    onlines: [],
+  },
 };
 
 const { actions, reducer } = createSlice({
@@ -11,9 +15,12 @@ const { actions, reducer } = createSlice({
     init: (state, { payload }) => {
       state.init = payload;
     },
+    setOnlineUsers: (state, { payload }) => {
+      state.users.onlines = payload;
+    },
   },
 });
 
-export const { init } = actions;
+export const { init, setOnlineUsers } = actions;
 
 export default reducer;

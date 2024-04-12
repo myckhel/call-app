@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { AuthState } from "../interfaces";
 // import api from "../../api";
 
-const INIT_STATE = {
-  user: null,
+const INIT_STATE: AuthState = {
+  user: undefined,
 };
 
 const { actions, reducer } = createSlice({
@@ -15,7 +16,7 @@ const { actions, reducer } = createSlice({
     // },
 
     logoutUser: (state) => {
-      state.user = null;
+      state.user = undefined;
     },
 
     setUser: (state, { payload }) => {
