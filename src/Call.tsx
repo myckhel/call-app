@@ -19,7 +19,10 @@ export default function Call() {
   const dispatch = useDispatch();
   const onLogout = () => dispatch(logoutUser());
   const user = useRootMemoSelector("auth.user");
-  const callUserId = useRootMemoSelector("call.otherUserId");
+  const callOtherUserId = useRootMemoSelector("call.otherUserId");
+  const isIncoming = useRootMemoSelector("call.isIncoming");
+
+  useSocketListeners({ listeners: CallManager.listeners });
 
   return (
     <div>
@@ -33,7 +36,8 @@ export default function Call() {
             Logout
           </button>
         </div>
-        {callUserId ? <Calling /> : <OnlineUsers />}
+        {callOtherUserId ? <Calling /> : <OnlineUsers />}
+        {isIncoming && <IncomingCallModal />}
       </div>
     </div>
   );
@@ -58,7 +62,7 @@ const OnlineUsers = () => {
       );
   }, [socket.connected]);
 
-  const onCallUser = (id) => CallManager.startCall(id);
+  const onCallUser = (id) => CallManager.callUser(id);
 
   return (
     <div>
@@ -81,3 +85,28 @@ const OnlineUsers = () => {
     </div>
   );
 };
+
+function IncomingCallModal() {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg p-8 w-80 bg-blue-800">
+        <h2 className="text-xl font-bold mb-4 text-dark-400">Incoming Call</h2>
+        <p className="text-lg mb-4 text-dark-400">Someone is calling...</p>
+        <div className="flex justify-between">
+          <button
+            onClick={() => CallManager.answerIncoming(true)}
+            className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2"
+          >
+            Accept
+          </button>
+          <button
+            onClick={() => CallManager.rejectIncoming()}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg"
+          >
+            Reject
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

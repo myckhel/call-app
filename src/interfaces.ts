@@ -8,6 +8,10 @@ export interface RootState {
 
 export interface CallState {
   otherUserId?: number | string;
+  isIncoming: boolean;
+  isCalling: boolean;
+  getCalled: boolean;
+  isOutgoing: boolean;
 }
 
 export interface AuthState {

@@ -2,16 +2,23 @@ import { useEffect } from "react";
 import { useSocket as useBaseSocket } from "socket.io-react-hook";
 import { useRootMemoSelector } from "use-redux-states";
 import { User } from "../../Call";
+import { Socket } from "socket.io-client";
 
 const { VITE_APP_SOCKET_URL } = import.meta.env;
 
+let socket: Socket;
+
 export const useSocket = (options?: any) => {
   const user: User = useRootMemoSelector("auth.user");
-  return useBaseSocket(VITE_APP_SOCKET_URL, {
+  const returnSocket = useBaseSocket(VITE_APP_SOCKET_URL, {
     enabled: !!user?.id,
     query: { user: JSON.stringify({ id: user?.id, name: user?.name }) },
     ...options,
   });
+
+  socket = returnSocket.socket;
+
+  return returnSocket;
 };
 
 export type UseListenersCallback = (...payloads) => any;
@@ -63,3 +70,5 @@ export const useSocketListeners = ({
 
   return socket;
 };
+
+export { socket };

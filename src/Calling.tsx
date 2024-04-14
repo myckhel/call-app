@@ -7,15 +7,14 @@ export default function Calling() {
   const otherUser = useRootMemoSelector("app.users.onlines", (users: User[]) =>
     users.find(({ id }) => id === otherUserId)
   );
-
   const onEndCall = () => CallManager.endCall();
 
-  const onRef = (video) => {
-    if (video) {
-      CallManager.createMedia({ video });
-      CallManager.initMedia();
-    }
+  const onRef = (video: HTMLVideoElement) => {
+    video && CallManager.startCall(video);
   };
+
+  const onRemoteRef = (video: HTMLVideoElement) =>
+    video && CallManager.createRemoteMedia(video);
 
   return (
     <div className="relative">
@@ -26,6 +25,13 @@ export default function Calling() {
         <video
           ref={onRef}
           className="w-full max-w-sm max-h-full"
+          autoPlay
+          playsInline
+          muted
+        />
+        <video
+          ref={onRemoteRef}
+          className="absolute bottom-0 left-0 w-32 h-32"
           autoPlay
           playsInline
           muted
